@@ -169,7 +169,7 @@ public void uneAdresseComplètePeutSAfficherSurUneLigne() {
 
   String chaine = new AdresseVersChaine(adresse).surUneLigne();
 
-  alors().la(chaine).est("31 chemin de Bénédigue 33400 Talence");
+  assertThat(chaine).isEqualTo("31 chemin de Bénédigue 33400 Talence");
 }
                     </code></pre>
                 </section>
@@ -217,7 +217,7 @@ public void uneAdresseVideSAfficheVideSurUneLigne() {
 
   String chaine = new AdresseVersChaine(adresse).surUneLigne();
 
-  alors().la(chaine).est("");
+  assertThat(chaine).isEqualTo("");
 }
                     </code></pre>
                 </section>
@@ -250,19 +250,84 @@ public String surUneLigne() {
                 </section>
 
                 <section>
-                    <h2>En bréf</h2>
-
                     <p>TDD découple les activités de <strong>recherche de
                         solution</strong> et <strong>respect de l'excellence
                         technique</strong> pour les exécuter au <strong>moment
                         le plus pertinent</strong>.</p>
-
                 </section>
 
                 <section>
-                    <h2></h2>
+                    <h2>Des tests auto-vérifiant</h2>
                 </section>
 
+                <section>
+                    <h3>Un test maladroit</h3>
+                    <pre><code data-trim class="java">
+@Test
+public void unCalendrierPeutDireSiUnJourEstOuvré() {
+  Calendrier calendrier = new Calendrier();
+  Calendar calendar = Calendar.getInstance();
+  calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+  assertThat(calendrier.estOuvré(calendar.getTime())).isTrue();
+
+  calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+  assertThat(calendrier.estOuvré(calendar.getTime())).isFalse();
+
+  calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+  assertThat(calendrier.estOuvré(calendar.getTime())).isFalse();
+}
+                    </code></pre>
+                    <p>En cas d'erreur :</p>
+                    <pre>
+org.junit.ComparisonFailure:
+Expected :false, Actual   :true
+
+      at unCalendrierPeutDireSiUnJourEstOuvré(TestCalendrier.java:23)
+                    </pre>
+                </section>
+
+                <section>
+                    <h3>Le test auto-vérifiant</h3>
+                    <pre><code data-trim class="java">
+@Test
+public void unJourDeLaSemaineDeTravailEstOuvré() {
+  compareOuvréPourLeJourEtLaValeur(Calendar.MONDAY, true);
+}
+
+@Test
+public void leSamediNEstPasOuvré() {
+  compareOuvréPourLeJourEtLaValeur(Calendar.SATURDAY, false);
+}
+
+@Test
+public void leDimancheNEstPasOuvré() {
+  compareOuvréPourLeJourEtLaValeur(Calendar.SUNDAY, false);
+}
+
+private void compareOuvréPourLeJourEtLaValeur(int jour, boolean attendu) {
+  boolean ouvré = new Calendrier().estOuvré(creeJour(jour));
+  assertThat(ouvré).as("Jour ouvré").isEqualTo(attendu);
+}
+
+private Date créeJour(int jour) {
+  Calendar calendar = Calendar.getInstance();
+  calendar.set(Calendar.DAY_OF_WEEK, jour);
+  return calendar.getTime();
+}
+                    </code></pre>
+                    <p>En cas d'erreur :</p>
+                    <pre>
+org.junit.ComparisonFailure: [Jour ouvré]
+Expected :false, Actual   :true
+
+       leDimancheNEstPasUnJourOuvré(TestCalendrier.java:24)
+                    </pre>
+                </section>
+
+                <section>
+                    <p>Le code de test est au service du développeur.</p>
+                </section>
             </div>
 
         </div>
