@@ -141,16 +141,19 @@
                 <section>
                     <h3>Un premier test</h3>
                     <pre><code data-trim class="java">
-@Test
-public void uneAdresseComplètePeutSAfficherSurUneLigne() {
-  Adresse adresse = new Adresse();
-  adresse.setRue("31 chemin de Bénédigue");
-  adresse.setCodePostal("33400");
-  adresse.setVille("Talence");
+public class TestConvertisseurAdresse {
 
-  String chaine = new AdresseVersChaine(adresse).surUneLigne();
+  @Test
+  public void uneAdresseComplètePeutSAfficherSurUneLigne() {
+    Adresse adresse = new Adresse();
+    adresse.setRue("31 chemin de Bénédigue");
+    adresse.setCodePostal("33400");
+    adresse.setVille("Talence");
 
-  assertThat(chaine).isEqualTo("31 chemin de Bénédigue 33400 Talence");
+    String chaine = new ConvertisseurAdresse(adresse).surUneLigne();
+
+    assertThat(chaine).isEqualTo("31 chemin de Bénédigue 33400 Talence");
+  }
 }
                     </code></pre>
                 </section>
@@ -158,9 +161,9 @@ public void uneAdresseComplètePeutSAfficherSurUneLigne() {
                 <section>
                     <h3>Focus sur le "qui fonctionne"</h3>
                     <pre><code data-trim class="java">
-public class AdresseVersChaine {
+public class ConvertisseurAdresse {
 
-  public AdresseVersChaine(Adresse adresse) {
+  public ConvertisseurAdresse(Adresse adresse) {
   }
 
   public String surUneLigne() {
@@ -173,9 +176,9 @@ public class AdresseVersChaine {
                 <section>
                     <h3>Focus sur le "propre"</h3>
                     <pre><code data-trim class="java">
-public class AdresseVersChaine {
+public class ConvertisseurAdresse {
 
-  public AdresseVersChaine(Adresse adresse) {
+  public ConvertisseurAdresse(Adresse adresse) {
     this.adresse = adresse;
   }
 
@@ -196,7 +199,7 @@ public class AdresseVersChaine {
 public void uneAdresseVideSAfficheVideSurUneLigne() {
   Adresse adresse = new Adresse();
 
-  String chaine = new AdresseVersChaine(adresse).surUneLigne();
+  String chaine = new ConvertisseurAdresse(adresse).surUneLigne();
 
   assertThat(chaine).isEqualTo("");
 }
@@ -241,7 +244,7 @@ public String surUneLigne() {
                 </section>
 
                 <section>
-                    <h3>Un test maladroit</h3>
+                    <h3>Un test peu explicite</h3>
                     <pre><code data-trim class="java">
 @Test
 public void unCalendrierPeutDireSiUnJourEstOuvré() {
@@ -307,6 +310,135 @@ Expected: false, Actual: true
 
                 <section>
                     <p>Le test doit rester au service du développeur.</p>
+                </section>
+
+                <section>
+                    <h2>Des tests répétables</h2>
+                </section>
+
+                <section>
+                    <h3>Un problème de temps?</h3>
+                    <figure>
+                        <img width="60%" height="60%" src="images/lapin-alice.jpg" alt="Gerbe"/>
+                        <figcaption>
+                            <small>© Walt Disney Pictures</small>
+                        </figcaption>
+                    </figure>
+                </section>
+
+                <section>
+                    <h3>Un test peu fiable</h3>
+                    <pre><code data-trim class="java">
+public class TestPublieurArticle {
+
+  @Test
+  public void laDateDePublicationDUnArticleEstLaDateCourante() {
+    Article article = new Article();
+    new PublieurArticle().publie(article);
+
+    Date dateCréation = article.getDatePublication();
+
+    assertThat(dateCréation).isEqualTo(new Date());
+  }
+}
+                    </code></pre>
+                    <p>En cas d'erreur :</p>
+                    <pre>
+org.junit.ComparisonFailure: expected: java.lang.String<2013-11-17T18:42:50> but was: java.lang.String<2013-11-17T18:42:50>
+
+Expected :2013-11-17T18:42:50
+Actual   :2013-11-17T18:42:50
+
+      at laDateDeCréationDUnArticleEstLaDateCourante(TestPublieurArticle.java:18)
+                    </pre>
+                </section>
+
+                <section>
+                    <h3>La date courante a évoluée</h3>
+                    <pre><code data-trim class="java">
+public class PublieurArticle {
+
+  public void publie(Article article) {
+    article.setDatePublication(new Date());
+  }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Une amélioration : réduire la précision</h3>
+                    <pre><code data-trim class="java">
+public class TestPublieurArticle {
+
+  @Test
+  public void laDateDePublicationDUnArticleEstLaDateCourante() {
+    Article article = new Article();
+    new PublieurArticle().publie(article);
+
+    Date dateCréation = article.getDatePublication();
+
+    assertThat(dateCréation).is(plusOuMoinsMaintenant());
+  }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Autre piste : découplage du temps</h3>
+                    <pre><code data-trim class="java">
+public class TestPublieurArticle {
+
+  @Test
+  public void laDateDePublicationDUnArticleEstLaDateCourante() {
+    Article article = new Article();
+    new PublieurArticle(créeTempsFigé(NOEL)).publie(article);
+
+    Date dateCréation = article.getDatePublication();
+
+    assertThat(dateCréation).isEqualTo(NOEL);
+  }
+
+  private Temps créeTempsFigé(final Date date) {
+    return new Temps() {
+      @Override
+      public Date maintenant() {
+        return date;
+      }
+    };
+  }
+
+  private static Date NOEL = new Date();
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Et côté production</h3>
+                    <pre><code data-trim class="java">
+public class PublieurArticle {
+
+  public PublieurArticle(Temps temps) {
+    this.temps = temps;
+  }
+
+  public void publie(Article article) {
+    article.setDatePublication(temps.maintenant());
+  }
+
+  private Temps temps;
+}
+                    </code></pre>
+
+                    <pre><code data-trim class="java">
+public interface Temps {
+
+  Date maintenant();
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <p>Les tests doivent rester fiables qu'importe l'environnement.</p>
                 </section>
 
                 <section>
