@@ -10,9 +10,11 @@
         <meta name="author" content="Michael">
 
         <meta name="apple-mobile-web-app-capable" content="yes"/>
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+        <meta name="apple-mobile-web-app-status-bar-style"
+              content="black-translucent"/>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
         <link rel="stylesheet" href="css/reveal.min.css">
         <link rel="stylesheet" href="css/theme/default.css" id="theme">
@@ -37,20 +39,26 @@
                     <h1>Pratiquer TDD</h1>
 
                     <p>
-                        <small><a href="https://twitter.com/michael_borde">Michael Borde</a> / <a
-                                href="http://www.arpinum.fr">www.arpinum.fr</a> / <a href="http://twitter.com/arpinum">@arpinum</a>
+                        <small><a href="https://twitter.com/michael_borde">Michael
+                            Borde</a> / <a href="http://www.arpinum.fr">www.arpinum.fr</a>
+                            / <a href="http://twitter.com/arpinum">@arpinum</a>
                         </small>
                     </p>
-                    <img width="10%" height="10%" src="images/logo-arpinum.png" alt="Arpinum"/>
+                    <img width="10%" height="10%" src="images/logo-arpinum.png"
+                         alt="Arpinum"/>
                 </section>
 
-                <!--<section>--><!--<img width="60%" height="60%" src="images/lolcat.jpg" alt="Lolcat"/>-->
+                <!--<section>-->
+                <!--<img width="60%" height="60%" src="images/lolcat.jpg" alt="Lolcat"/>-->
                 <!--</section>-->
 
                 <section>
                     <h2>#TDD ?!</h2>
-                    <img width="20%" height="20%" src="images/livre-tdd-by-example.jpeg" alt="TDD By Example"/> <img
-                        width="20%" height="20%" src="images/livre-xp-explained.jpg" alt="XP Explained"/>
+                    <img width="20%" height="20%"
+                         src="images/livre-tdd-by-example.jpeg"
+                         alt="TDD By Example"/> <img width="20%" height="20%"
+                                                     src="images/livre-xp-explained.jpg"
+                                                     alt="XP Explained"/>
                 </section>
 
                 <section>
@@ -63,13 +71,16 @@
                 </section>
 
                 <section>
-                    <blockquote>&ldquo;Du code non testé est du code qui ne fonctionne pas.&rdquo;</blockquote>
+                    <blockquote>&ldquo;Du code non testé est du code qui ne
+                        fonctionne pas.&rdquo;</blockquote>
                     <p>Kent Beck</p>
                 </section>
 
                 <section>
                     <h2>C'est pour qui ?</h2>
-                    <img width="60%" height="60%" src="images/equipe-developpement.jpg" alt="Equipe développement"/>
+                    <img width="60%" height="60%"
+                         src="images/equipe-developpement.jpg"
+                         alt="Equipe développement"/>
                 </section>
 
                 <section>
@@ -78,7 +89,8 @@
 
                 <section>
                     <p>Un seul outil :</p>
-                    <img width="30%" height="30%" src="images/junit.jpg" alt="JUnit"/>
+                    <img width="30%" height="30%" src="images/junit.jpg"
+                         alt="JUnit"/>
 
                     <p>les tests unitaires</p>
                 </section>
@@ -99,37 +111,156 @@
                 </section>
 
                 <section>
-                    <p>Ne pas écrire de code de production si ce n'est pour faire passer un test qui échoue.</p>
+                    <p>Ne pas écrire de code de production si ce n'est pour
+                        faire passer un test qui échoue.</p>
                 </section>
 
                 <section>
-                    <p>Ecrire juste assez de code de test pour démontrer un échec.</p>
+                    <p>Ecrire juste assez de code de test pour démontrer un
+                        échec.</p>
                 </section>
 
                 <section>
-                    <p>Ecrire juste assez de code de production pour faire passer un test.</p>
+                    <p>Ecrire juste assez de code de production pour faire
+                        passer un test.</p>
                 </section>
 
                 <section>
                     <h2>Un cycle rapide</h2>
-                    <img width="60%" height="60%" src="images/cycle-tdd.jpg" alt="JUnit"/>
+                    <img width="60%" height="60%" src="images/cycle-tdd.jpg"
+                         alt="JUnit"/>
                 </section>
 
                 <section>
                     <h2>Refactoring</h2>
-                    <img width="60%" height="60%" src="images/spaghetti.jpg" alt="JUnit"/>
+                    <img width="60%" height="60%" src="images/spaghetti.jpg"
+                         alt="JUnit"/>
                 </section>
 
                 <section>
                     <p>Une bonne conception ne vient pas en premier...</p>
-                    <img width="60%" height="60%" src="images/evolution-humaine.jpg" alt="JUnit"/>
+                    <img width="60%" height="60%"
+                         src="images/evolution-humaine.jpg" alt="JUnit"/>
 
                     <p class="fragment"><strong>elle apparaît</strong></p>
                 </section>
 
                 <section>
                     <h2>Et en pratique?</h2>
-                    <img width="60%" height="60%" src="images/chat-pensif.jpg" alt="JUnit"/>
+                    <img width="60%" height="60%" src="images/chat-pensif.jpg"
+                         alt="JUnit"/>
+                </section>
+
+                <section>
+                    <h2>Décortiquons la mission</h2>
+
+                    <p>Du code propre qui fonctionne maintenant.</p>
+                </section>
+
+                <section>
+                    <h3>Un premier test</h3>
+                    <pre><code data-trim class="java">
+@Test
+public void uneAdresseComplètePeutSAfficherSurUneLigne() {
+  Adresse adresse = new Adresse();
+  adresse.setRue("31 chemin de Bénédigue");
+  adresse.setCodePostal("33400");
+  adresse.setVille("Talence");
+
+  String chaine = new AdresseVersChaine(adresse).surUneLigne();
+
+  alors().la(chaine).est("31 chemin de Bénédigue 33400 Talence");
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Focus sur le "qui fonctionne"</h3>
+                    <pre><code data-trim class="java">
+public class AdresseVersChaine {
+
+  public AdresseVersChaine(Adresse adresse) {
+  }
+
+  public String surUneLigne() {
+    return "31 chemin de Bénédigue 33400 Talence";
+  }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Focus sur le "propre"</h3>
+                    <pre><code data-trim class="java">
+public class AdresseVersChaine {
+
+  public AdresseVersChaine(Adresse adresse) {
+    this.adresse = adresse;
+  }
+
+  public String surUneLigne() {
+    return String.format("%s %s %s", this.adresse.getRue(),
+        this.adresse.getCodePostal(), this.adresse.getVille());
+  }
+
+  private Adresse adresse;
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Un deuxième test</h3>
+                    <pre><code data-trim class="java">
+@Test
+public void uneAdresseVideSAfficheVideSurUneLigne() {
+  Adresse adresse = new Adresse();
+
+  String chaine = new AdresseVersChaine(adresse).surUneLigne();
+
+  alors().la(chaine).est("");
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Focus sur le "qui fonctionne"</h3>
+                    <pre><code data-trim class="java">
+public String surUneLigne() {
+  String rue = this.adresse.getRue() != null ? this.adresse.getRue() + " "
+      : "";
+  String codePostal = this.adresse.getCodePostal() != null ? this.adresse
+      .getCodePostal() +
+      " " : "";
+  String ville = this.adresse.getVille() != null ? this.adresse.getVille()
+      : "";
+  return String.format("%s%s%s", rue, codePostal, ville);
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Focus sur le "propre"</h3>
+                    <pre><code data-trim class="java">
+public String surUneLigne() {
+  List&lt;String&gt; parties = Lists.newArrayList(adresse.getRue(),
+    adresse.getCodePostal(), adresse.getVille());
+  return Joiner.on(" ").skipNulls().join(parties);
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>En bréf</h2>
+
+                    <p>TDD découple les activités de <strong>recherche de
+                        solution</strong> et <strong>respect de l'excellence
+                        technique</strong> pour les exécuter au <strong>moment
+                        le plus pertinent</strong>.</p>
+
+                </section>
+
+                <section>
+                    <h2></h2>
                 </section>
 
             </div>
