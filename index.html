@@ -33,6 +33,8 @@
         <div class="reveal">
 
             <div class="slides">
+
+                <!--Présentation théorique-->
                 <section>
                     <h1>Pratiquer TDD</h1>
 
@@ -43,9 +45,6 @@
                     </p>
                     <img width="10%" height="10%" src="images/logo-arpinum.png" alt="Arpinum"/>
                 </section>
-
-                <!--<section>--><!--<img width="60%" height="60%" src="images/lolcat.jpg" alt="Lolcat"/>-->
-                <!--</section>-->
 
                 <section>
                     <h2>#TDD ?!</h2>
@@ -127,9 +126,20 @@
                     <p class="fragment"><strong>elle apparaît</strong></p>
                 </section>
 
+                <!--Présentation pratique-->
                 <section>
-                    <h2>Et en pratique?</h2>
+                    <h2>Et en pratique ?</h2>
                     <img width="60%" height="60%" src="images/chat-pensif.jpg" alt="Chat pensif"/>
+                </section>
+
+                <section>
+                    <h3>Une vie après le Fizzbuzz ?</h3>
+                    <figure>
+                        <img width="60%" height="60%" src="images/bisounours.jpg" alt="Bisounours"/>
+                        <figcaption>
+                            <small>© Kenner</small>
+                        </figcaption>
+                    </figure>
                 </section>
 
                 <section>
@@ -141,7 +151,7 @@
                 <section>
                     <h3>Un premier test</h3>
                     <pre><code data-trim class="java">
-public class TestConvertisseurAdresse {
+public class ConvertisseurAdresseTest {
 
   @Test
   public void uneAdresseComplètePeutSAfficherSurUneLigne() {
@@ -240,6 +250,76 @@ public String surUneLigne() {
                 </section>
 
                 <section>
+                    <h2>Par où commencer ?</h2>
+                </section>
+
+                <section>
+                    <h3>Le monde hostile des applications complexes</h3>
+                    <figure>
+                        <img width="50%" height="50%" src="images/machine-infernale.jpg" alt="Machine infernale"/>
+                        <figcaption>
+                            <small>© Alice Moisset</small>
+                        </figcaption>
+                    </figure>
+                </section>
+
+                <section>
+                    <h3>La "Clean Architecture"</h3>
+                    <figure>
+                        <img width="60%" height="60%" src="images/clean-architecture.jpg" alt="Clean Architecture"/>
+                        <figcaption>
+                            <small>© Uncle Bob</small>
+                        </figcaption>
+                    </figure>
+                </section>
+
+                <section>
+                    <h3>Un point de départ : le modèle du domaine</h3>
+                    <ul>
+                        <li>Définit le langage omniprésent,</li>
+                        <li>Soulève les questions fonctionnelles,</li>
+                        <li>Peu de complexité technique,</li>
+                        <li>Tests orientés résultat.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <p>Des tests orientés résultat ?</p>
+                </section>
+
+                <section>
+                    <h3>Un test de chorégraphie</h3>
+                    <pre><code data-trim class="actionscript">
+[Test]
+public function nAppliqueLesImpactsQueSiLesObjetsSeCollisionnent():void {
+  creeUneCibleMockeeTouchableDansLeMonde();
+  var projectile:Projectile = lancePierre.projectile;
+  projectile.lanceToiVers(creeUnPointTresLoinDeLaCible());
+
+  _bus.evenementSurvenu(Evenement.PROJECTILE_LANCE_TERMINE, projectile);
+
+  assertThat(Monde.courant.touchables[0],
+             received().method("tuEsTouchee").never());
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Un test de résultat</h3>
+                    <pre><code data-trim class="actionscript">
+[Test]
+public function leLancePierreAjusteLeProjectileSiLeToucheSeDeplace():void {
+  _touche.deplaceVers(new Point(13, 37));
+
+  _lancePierre.ajusteLeProjectile(_touche);
+
+  assertThat(_projectile.x, equalTo(13));
+  assertThat(_projectile.y, equalTo(37));
+}
+                    </code></pre>
+                </section>
+
+                <section>
                     <h2>Des tests auto-vérifiant</h2>
                 </section>
 
@@ -304,7 +384,7 @@ private Date créeJour(int jour) {
 org.junit.ComparisonFailure: [Jour ouvré]
 Expected: false, Actual: true
 
-       leDimancheNEstPasUnJourOuvré(TestCalendrier.java:24)
+       leDimancheNEstPasUnJourOuvré(CalendrierTest.java:24)
                     </pre>
                 </section>
 
@@ -319,7 +399,7 @@ Expected: false, Actual: true
                 <section>
                     <h3>Un problème de temps?</h3>
                     <figure>
-                        <img width="60%" height="60%" src="images/lapin-alice.jpg" alt="Gerbe"/>
+                        <img width="60%" height="60%" src="images/lapin-alice.jpg" alt="Alice au pays des merveilles"/>
                         <figcaption>
                             <small>© Walt Disney Pictures</small>
                         </figcaption>
@@ -329,7 +409,7 @@ Expected: false, Actual: true
                 <section>
                     <h3>Un test peu fiable</h3>
                     <pre><code data-trim class="java">
-public class TestPublieurArticle {
+public class PublieurArticleTest {
 
   @Test
   public void laDateDePublicationDUnArticleEstLaDateCourante() {
@@ -349,7 +429,7 @@ org.junit.ComparisonFailure: expected: java.lang.String<2013-11-17T18:42:50> but
 Expected :2013-11-17T18:42:50
 Actual   :2013-11-17T18:42:50
 
-      at laDateDeCréationDUnArticleEstLaDateCourante(TestPublieurArticle.java:18)
+      at laDateDeCréationDUnArticleEstLaDateCourante(PublieurArticleTest.java:18)
                     </pre>
                 </section>
 
@@ -368,7 +448,7 @@ public class PublieurArticle {
                 <section>
                     <h3>Une amélioration : réduire la précision</h3>
                     <pre><code data-trim class="java">
-public class TestPublieurArticle {
+public class PublieurArticleTest {
 
   @Test
   public void laDateDePublicationDUnArticleEstLaDateCourante() {
@@ -386,28 +466,22 @@ public class TestPublieurArticle {
                 <section>
                     <h3>Autre piste : découplage du temps</h3>
                     <pre><code data-trim class="java">
-public class TestPublieurArticle {
+@Test
+public void laDateDePublicationDUnArticleEstLaDateCourante() {
+  Article article = new Article();
+  new PublieurArticle(créeTempsFigé(NOEL)).publie(article);
 
-  @Test
-  public void laDateDePublicationDUnArticleEstLaDateCourante() {
-    Article article = new Article();
-    new PublieurArticle(créeTempsFigé(NOEL)).publie(article);
+  Date dateCréation = article.getDatePublication();
 
-    Date dateCréation = article.getDatePublication();
+  assertThat(dateCréation).isEqualTo(NOEL);
+}
 
-    assertThat(dateCréation).isEqualTo(NOEL);
-  }
-
-  private Temps créeTempsFigé(final Date date) {
-    return new Temps() {
-      @Override
-      public Date maintenant() {
-        return date;
-      }
-    };
-  }
-
-  private static Date NOEL = new Date();
+private Temps créeTempsFigé(final Date date) {
+  return new Temps() {
+    @Override public Date maintenant() {
+      return date;
+    }
+  };
 }
                     </code></pre>
                 </section>
@@ -433,6 +507,25 @@ public class PublieurArticle {
 public interface Temps {
 
   Date maintenant();
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Dans le même ordre d'idée</h3>
+                    <pre><code data-trim class="java">
+[Test]
+public function uneCiblePeutDevenirBonus():void {
+  configureLAleaPourUnBonus();
+  _cible.etat = Etats.defaut;
+
+  faisEnSorteQueLaCibleSeRetourne();
+
+  assertThat(_cible.etat, equalTo(Etats.transitionPourBonus));
+}
+
+private function configureLAleaPourUnBonus():void {
+  gestionnaireDAleas.entierARetourner = 0;
 }
                     </code></pre>
                 </section>
@@ -487,7 +580,7 @@ public interface Temps {
                 </section>
 
                 <section>
-                    <p>Ça ressemble aux mêmes exigences que pour le code de production.</p>
+                    <p>Les mêmes exigences que pour le code de production !</p>
                 </section>
 
                 <section>
@@ -502,7 +595,6 @@ public interface Temps {
         <script src="js/reveal.min.js"></script>
 
         <script>
-
             Reveal.initialize({
                 controls: false,
                 progress: true,
