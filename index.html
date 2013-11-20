@@ -24,6 +24,10 @@
             span.indice, blockquote.erreur {
                 color: red;
             }
+
+            .reveal pre code.volumineux {
+                max-height: 500px;
+            }
         </style>
 
         <!-- If the query includes 'print-pdf', use the PDF print sheet -->
@@ -69,15 +73,10 @@
                 <section>
                     <h2>Deux outils</h2>
 
-                    <img width="30%" height="30%" src="images/junit.jpg" alt="JUnit"/>
-
-                    <p>et</p>
-                    <figure>
-                        <img width="30%" height="30%" src="images/krang.jpg" alt="Un cerveau"/>
-                        <figcaption>
-                            <small>© Fred Wolf Films</small>
-                        </figcaption>
-                    </figure>
+                    <img width="30%" height="30%" src="images/junit.jpg" alt="JUnit"/> &amp; <img width="30%"
+                                                                                                  height="30%"
+                                                                                                  src="images/krang.jpg"
+                                                                                                  alt="Krang © Fred Wolf Films"/>
                 </section>
 
                 <section>
@@ -290,7 +289,15 @@ public function leLancePierreAjusteLeProjectileSiLeToucheSeDeplace():void {
                 </section>
 
                 <section>
-                    <p>Et quand on corrige des bugs, on commence par quoi ?</p>
+                    <p>Les doublures de test sont un mal parfois nécessaire.</p>
+                </section>
+
+                <section>
+                    <p>Problème de test = problème de code de prod.</p>
+                </section>
+
+                <section>
+                    <h3>Quand on corrige des bugs, on commence par quoi&nbsp;?</h3>
                 </section>
 
                 <section>
@@ -418,7 +425,7 @@ Expected: false, Actual: true
 
                 <section>
                     <h3>Le test auto-vérifiant</h3>
-                    <pre><code data-trim class="java">
+                    <pre><code data-trim class="java volumineux">
 @Test
 public void unJourDeLaSemaineDeTravailEstOuvré() {
   compareOuvréPourLeJourEtLaValeur(Calendar.MONDAY, true);
@@ -435,14 +442,8 @@ public void leDimancheNEstPasOuvré() {
 }
 
 private void compareOuvréPourLeJourEtLaValeur(int jour, boolean attendu) {
-  boolean ouvré = new Calendrier().estOuvré(creeJour(jour));
+  boolean ouvré = new Calendrier().estOuvré(créeJour(jour));
   assertThat(ouvré).as("Jour ouvré").isEqualTo(attendu);
-}
-
-private Date créeJour(int jour) {
-  Calendar calendar = Calendar.getInstance();
-  calendar.set(Calendar.DAY_OF_WEEK, jour);
-  return calendar.getTime();
 }
                     </code></pre>
                     <div class="fragment">
@@ -596,18 +597,15 @@ public interface Temps {
                 <section>
                     <h3>Dans le même ordre d'idée</h3>
                     <pre><code data-trim class="java">
-[Test]
-public function uneCiblePeutDevenirBonus():void {
-  configureLAleaPourUnBonus();
-  _cible.etat = Etats.defaut;
+@Test
+public void leFournisseurPeutFournirUnElémentAléatoirement() {
+  List&lt;String&gt; chaines = Lists.newArrayList("un", "deux", "trois");
+  GenerateurNombre générateur = new GenerateurNombreFige(1);
+  FournisseurElement fournisseur = new FournisseurElement(générateur);
 
-  faisEnSorteQueLaCibleSeRetourne();
+  String élément = fournisseur.fournisUnElémentDeLaListe(chaines);
 
-  assertThat(_cible.etat, equalTo(Etats.transitionPourBonus));
-}
-
-private function configureLAleaPourUnBonus():void {
-  gestionnaireDAleas.entierARetourner = 0;
+  assertThat(élément).isEqualTo("deux");
 }
                     </code></pre>
                 </section>
@@ -668,6 +666,40 @@ private function configureLAleaPourUnBonus():void {
                 <section>
                     <p>Un test n'est que du <strong>code standard</strong> qui a pour seule particularité de ne pas
                         partir en production.</p>
+                </section>
+
+                <section>
+                    <h2>Les questions qu'on ne se pose plus avec TDD</h2>
+                </section>
+
+                <section>
+                    <p>Peut-on tester les méthodes privées ?</p>
+
+                    <p class="fragment"><strong>Nonsense !</strong></p>
+                </section>
+
+                <section>
+                    <p>Peut-on tester les méthodes statiques ?</p>
+
+                    <p class="fragment"><strong>Nonsense !</strong></p>
+                </section>
+
+                <section>
+                    <h2>Ce qu'on pourrait aborder en off</h2>
+
+                    <ul>
+                        <li>Puis-je créer du code que pour les tests ?</li>
+                        <li>Doit-on tout tester ?</li>
+                        <li>Les tests bout en bout sont-ils plus fiables ?</li>
+                        <li>Comment faire avec du code hérité ?</li>
+                        <li>Je n'ai pas le temps de tester</li>
+                        <li>Je n'ai pas d'outil dans mon langage</li>
+                        <p>... et bien autres choses</p>
+                    </ul>
+                </section>
+
+                <section>
+                    <p>Fin</p>
                 </section>
             </div>
 
