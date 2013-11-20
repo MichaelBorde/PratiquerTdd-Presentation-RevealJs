@@ -60,18 +60,24 @@
 
                 <section>
                     <h2>La mission ?</h2>
-                </section>
-                <section>
+
                     <p>Du code propre qui fonctionne...</p>
 
                     <p class="fragment"><strong>maintenant!</strong></p>
                 </section>
 
                 <section>
-                    <h2>Un seul outil</h2>
+                    <h2>Deux outils</h2>
+
                     <img width="30%" height="30%" src="images/junit.jpg" alt="JUnit"/>
 
-                    <p>les tests unitaires</p>
+                    <p>et</p>
+                    <figure>
+                        <img width="30%" height="30%" src="images/krang.jpg" alt="Un cerveau"/>
+                        <figcaption>
+                            <small>© Fred Wolf Films</small>
+                        </figcaption>
+                    </figure>
                 </section>
 
                 <section>
@@ -88,11 +94,6 @@
                 <section>
                     <h2>Un cycle rapide</h2>
                     <img width="60%" height="60%" src="images/cycle-tdd.jpg" alt="Cycle TDD"/>
-                </section>
-
-                <section>
-                    <h2>Refactoring</h2>
-                    <img width="60%" height="60%" src="images/spaghetti.jpg" alt="Plat de spaguetti"/>
                 </section>
 
                 <!--Présentation pratique-->
@@ -265,7 +266,7 @@ public function nAppliqueLesImpactsQueSiLesObjetsSeCollisionnent():void {
   var projectile:Projectile = lancePierre.projectile;
   projectile.lanceToiVers(creeUnPointTresLoinDeLaCible());
 
-  _bus.evenementSurvenu(Evenement.PROJECTILE_LANCE_TERMINE, projectile);
+  _bus.prendsEnCompte(Evenement.PROJECTILE_LANCE_TERMINE, projectile);
 
   assertThat(Monde.courant.touchables[0],
              received().method("tuEsTouchee").never());
@@ -370,7 +371,9 @@ public void lEnsembleDesNumerosSontDetectesDansUnTexte() {
 
   assertThat(numeros).containsExactly("0621034322", "0522341145");
 }
+                    </code></pre>
 
+                    <pre class="fragment"><code data-trim class="java">
 @Test
 public void unNumeroNePeutPasAvoirDesChiffresSeparesPar3Caracteres() {
   List&lt;String&gt; numeros = this.detecteur.detecte("04---04-04-04---04");
@@ -402,13 +405,15 @@ public void unCalendrierPeutDireSiUnJourEstOuvré() {
   assertThat(calendrier.estOuvré(calendar.getTime())).isFalse();
 }
                     </code></pre>
-                    <p>En cas d'erreur :</p>
-                    <pre>
+                    <div class="fragment">
+                        <p>En cas d'erreur :</p>
+                        <pre>
 org.junit.ComparisonFailure:
 Expected: false, Actual: true
 
       at unCalendrierPeutDireSiUnJourEstOuvré(TestCalendrier.java:23)
-                    </pre>
+                        </pre>
+                    </div>
                 </section>
 
                 <section>
@@ -440,13 +445,15 @@ private Date créeJour(int jour) {
   return calendar.getTime();
 }
                     </code></pre>
-                    <p>En cas d'erreur :</p>
-                    <pre>
+                    <div class="fragment">
+                        <p>En cas d'erreur :</p>
+                        <pre>
 org.junit.ComparisonFailure: [Jour ouvré]
 Expected: false, Actual: true
 
        leDimancheNEstPasUnJourOuvré(CalendrierTest.java:24)
-                    </pre>
+                        </pre>
+                    </div>
                 </section>
 
                 <section>
@@ -477,25 +484,27 @@ public class PublieurArticleTest {
     Article article = new Article();
     new PublieurArticle().publie(article);
 
-    Date dateCréation = article.getDatePublication();
+    Date datePublication = article.getDatePublication();
 
-    assertThat(dateCréation).isEqualTo(new Date());
+    assertThat(datePublication).isEqualTo(new Date());
   }
 }
                     </code></pre>
-                    <p>En cas d'erreur :</p>
-                    <pre>
+                    <div class="fragment">
+                        <p>En cas d'erreur :</p>
+                        <pre>
 org.junit.ComparisonFailure: expected: java.lang.String<2013-11-17T18:42:50> but was: java.lang.String<2013-11-17T18:42:50>
 
 Expected :2013-11-17T18:42:50
 Actual   :2013-11-17T18:42:50
 
       at laDateDeCréationDUnArticleEstLaDateCourante(PublieurArticleTest.java:18)
-                    </pre>
+                        </pre>
+                    </div>
                 </section>
 
                 <section>
-                    <h3>La date courante a évoluée</h3>
+                    <h3>L'implémentation</h3>
                     <pre><code data-trim class="java">
 public class PublieurArticle {
 
@@ -504,6 +513,18 @@ public class PublieurArticle {
   }
 }
                     </code></pre>
+                    <div class="fragment">
+                        <pre><code data-trim class="java">
+@Test
+public void laDateDePublicationDUnArticleEstLaDateCourante() {
+
+  ...
+
+  assertThat(datePublication).isEqualTo(new Date());
+}
+                        </code></pre>
+                        <p>La date courante a évoluée!</p>
+                    </div>
                 </section>
 
                 <section>
@@ -516,9 +537,9 @@ public class PublieurArticleTest {
     Article article = new Article();
     new PublieurArticle().publie(article);
 
-    Date dateCréation = article.getDatePublication();
+    Date datePublication = article.getDatePublication();
 
-    assertThat(dateCréation).is(plusOuMoinsMaintenant());
+    assertThat(datePublication).is(plusOuMoinsMaintenant());
   }
 }
                     </code></pre>
@@ -532,9 +553,9 @@ public void laDateDePublicationDUnArticleEstLaDateCourante() {
   Article article = new Article();
   new PublieurArticle(créeTempsFigé(NOEL)).publie(article);
 
-  Date dateCréation = article.getDatePublication();
+  Date datePublication = article.getDatePublication();
 
-  assertThat(dateCréation).isEqualTo(NOEL);
+  assertThat(datePublication).isEqualTo(NOEL);
 }
 
 private Temps créeTempsFigé(final Date date) {
@@ -602,19 +623,19 @@ private function configureLAleaPourUnBonus():void {
                 <section>
                     <h3>La conséquence funeste des mauvais tests</h3>
 
-                    <p>Tests contraignants = moins de test,</p>
+                    <p>Tests contraignants =></p>
 
-                    <p>Moins de test = moins de feedback,</p>
+                    <p>Moins de tests =></p>
 
-                    <p>Moins de feedback = moins de courage,</p>
+                    <p>Moins de feedbacks =></p>
 
-                    <p>Moins de courage = moins de refactoring,</p>
+                    <p>Moins de courage =></p>
 
-                    <p>Moins de refactoring = code moins évolutif,</p>
+                    <p>Moins de refactoring =></p>
 
-                    <p>Code moins évolutif = moins d'agilité,</p>
+                    <p>Code moins évolutif =></p>
 
-                    <p>Moins d'agilité = mort du produit.</p>
+                    <p>Moins d'agilité</p>
                 </section>
 
                 <section>
