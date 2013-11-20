@@ -260,15 +260,14 @@ public String surUneLigne() {
                     <h3>Un test de chorégraphie</h3>
                     <pre><code data-trim class="actionscript">
 [Test]
-public function nAppliqueLesImpactsQueSiLesObjetsSeCollisionnent():void {
-  creeUneCibleMockeeTouchableDansLeMonde();
-  var projectile:Projectile = lancePierre.projectile;
-  projectile.lanceToiVers(creeUnPointTresLoinDeLaCible());
+public function impossibleDEcouterUnEvenementPlusieursFois():void {
+  var ecouteur:EcouteurDEvenement = nice(EcouteurDEvenement);
+  _bus.ajouteEcouteur(ecouteur, _evenement);
+  _bus.ajouteEcouteur(ecouteur, _evenement);
 
-  _bus.prendsEnCompte(Evenement.PROJECTILE_LANCE_TERMINE, projectile);
+  _bus.evenementSurvenu(_evenement);
 
-  assertThat(Monde.courant.touchables[0],
-             received().method("tuEsTouchee").never());
+  assertThat(ecouteur, received().method("evenementSurvenu").once());
 }
                     </code></pre>
                 </section>
@@ -297,7 +296,7 @@ public function leLancePierreAjusteLeProjectileSiLeToucheSeDeplace():void {
                 </section>
 
                 <section>
-                    <h3>Quand on corrige des bugs, on commence par quoi&nbsp;?</h3>
+                    <h2>Corriger des bugs en TDD</h2>
                 </section>
 
                 <section>
